@@ -11,6 +11,13 @@ export interface RetPrice {
   total: number;
 }
 
+export interface Attachments {
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  extracted_content: string
+}
+
 // Chat-related interfaces
 export interface MessageContent {
   type: string;
@@ -24,7 +31,7 @@ export interface ChatMessage {
   sender: string;
   created_at: string;
   updated_at: string;
-  attachments: any[];
+  attachments: Attachments[];
   files: any[];
 }
 
