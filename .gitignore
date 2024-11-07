@@ -1,3 +1,9 @@
+# Misc
+
+test*
+conversations.json
+info.json
+
 # Logs
 logs
 *.log

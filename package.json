@@ -1,0 +1,22 @@
+{
+  "name": "is-it-worth",
+  "version": "1.0.0",
+  "description": "A tool that calculate the cost of your conversations with claude/chatgpt pro and if it's more worth it to buy API credit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon src/index.ts"
+  },
+  "author": "Gpaul | Faldin#8577",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^16.4.5"
+  }
+}
