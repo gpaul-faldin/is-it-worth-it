@@ -49,13 +49,17 @@ export default class AnthropicClass {
 
   /* Anthropic functions */
   private async countTokens(messages: BetaMessageParam[]) {
-    const response = await this.client.beta.messages.countTokens({
+    try {const response = await this.client.beta.messages.countTokens({
       betas: ["token-counting-2024-11-01"],
       model: "claude-3-5-sonnet-20241022",
       messages: messages,
     });
 
     return response.input_tokens;
+  } catch (error: any) {
+    console.log(messages)
+    throw Error(error.message);
+  }
   }
   private async getPriceBasedOnTokens(tokens: number, io: string = "input") {
     if (io === "input") {
@@ -160,7 +164,7 @@ export default class AnthropicClass {
         price.input += tempPrice;
       } else if (messages[i].sender === "assistant") {
         let outputToken = await this.countTokens([
-          { role: "assistant", content: messages[i].content[0].text },
+          { role: "assistant", content: messages[i].content[0].text.trimEnd() },
         ]);
         tokens.output += outputToken;
         tokens.total += outputToken;
