@@ -43,7 +43,8 @@ The tool provides two types of output:
         "inputTokens": 123456789,
         "outputTokens": 123456789,
         "totalTokens": 123456789
-    }
+    },
+    ...
   },
   "totalCost": 85.28,
   "totalInputTokens": 1234567,
@@ -52,7 +53,7 @@ The tool provides two types of output:
     "start": "2024-01-01T00:00:00.000Z",
     "end": "2024-03-31T23:59:59.999Z"
   },
-    "recommendation": "Consider Claude Pro Subscription"
+  "recommendation": "Consider Claude Pro Subscription"
 }
 ```
 
