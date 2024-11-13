@@ -1,106 +1,108 @@
-# Claude Sonnet Cost Tracker
+# Is It Worth It? (IIWI)
 
-A TypeScript utility for analyzing and tracking costs of Claude Sonnet conversations to easily compare claude.ai pricing compared to potential anthropic API credits usage.
+A CLI tool that analyzes your Claude.ai conversations to help you decide if it's more cost-effective to use Claude Pro subscription or Anthropic API credits.
 
 ## Installation
 
 ```bash
-npm install @anthropic-ai/sdk dotenv
+# Install dependencies
+npm install
+
+# Create .env file (based on the .env.example file) and add your Anthropic API key
+echo "ANTHROPIC_API_KEY=your-api-key" > .env
 ```
 
 ## Usage
 
-```typescript
-import AnthropicClass from "./class/anthropic.class";
-import { Chat } from "./dts/anthropic";
-import fs from "fs";
+```bash
+# Basic analysis
+npm run analyze -- -i ./conversations.json
 
-// Initialize with API key
-const anthropic = new AnthropicClass(); // Uses ANTHROPIC_API_KEY from .env
-// Or
-const anthropic = new AnthropicClass("your-api-key");
+# Specify output file
+npm run analyze -- -i ./conversations.json -o ./custom-output.json
 
-// Get info for all conversations
-const conversations: Chat[] = // your conversation history 
-// OR
-const conversations: Chat[] = JSON.parse(fs.readFileSync("conversations.json", "utf8")); // conversations.json from claude.ai "Export data" feature
+# Analysis for specific date range
+npm run analyze -- -i ./conversations.json --start 2024-01-01 --end 2024-03-31
 
-const info = await anthropic.getInfoHistoryConversation(conversations);
-
-// Get info for specific timeframe
-const startDate = 1730305080000; // Unix timestamp in milliseconds
-const endDate = 1730391480000;   // Unix timestamp in milliseconds
-const timeframeInfo = await anthropic.getInfoHistoryConversation(
-    conversations, 
-    startDate, 
-    endDate
-);
-
-// Get info starting from a specific date
-const startDate = 1730305080000; // Unix timestamp in milliseconds
-const info = await anthropic.getInfoHistoryConversation(
-    conversations, 
-    startDate
-);
-
+# Show help
+npm run analyze -- --help
 ```
 
-## API Reference
+## Command Line Options
 
-### `getInfoHistoryConversation(conversations, startDate?, endDate?)`
+### analyze
+Analyzes conversations and calculates cost comparison
 
-Returns cost and token information for multiple conversations.
+Options:
+- `-i, --input <path>` - Input file path (required)
+- `-o, --output <path>` - Output file path (defaults to analysis.json)
+- `--start <date>` - Start date (YYYY-MM-DD)
+- `--end <date>` - End date (YYYY-MM-DD)
 
-#### Parameters
-- `conversations: Chat[]` - Array of conversation objects
-- `startDate?: number` - Optional start timestamp in milliseconds
-- `endDate?: number` - Optional end timestamp in milliseconds
+## Output
 
-#### Returns
-```typescript
+The tool provides two types of output:
+
+1. A JSON file containing detailed analysis:
+```json
 {
-    conversationsCost: {
-        [uuid: string]: {
-            inputPrice: number;
-            outputPrice: number;
-            totalPrice: number;
-            inputTokens: number;
-            outputTokens: number;
-            totalTokens: number;
-        }
-    };
-    totalCost: number;
-    totalInputTokens: number;
-    totalOutputTokens: number;
-    numberOfConversations: number;
+  "conversationsCost": {
+    "uuid": {
+        "inputPrice": 123.45,
+        "outputPrice": 123.45,
+        "totalPrice": 123.45,
+        "inputTokens": 123456789,
+        "outputTokens": 123456789,
+        "totalTokens": 123456789
+    }
+  },
+  "totalCost": 85.28,
+  "totalInputTokens": 1234567,
+  "totalOutputTokens": 890123,
+
+  "dateRange": {
+    "start": "2024-01-01T00:00:00.000Z",
+    "end": "2024-03-31T23:59:59.999Z"
+  },
+    "recommendation": "Consider Claude Pro Subscription"
 }
 ```
 
-### `getInfoSingleConversation(conversation)`
+2. A pretty-printed console output:
+```
+📊 Analysis Summary
+═════════════════
 
-Analyzes a single conversation for cost and token usage.
+📅 Date Range:
+├─ From: 1/1/2024
+└─ To: 3/31/2024
 
-#### Parameters
-- `conversation: Chat` - Single conversation object
+📝 Usage Statistics:
+├─ Total Input Tokens: 1,234,567
+├─ Total Output Tokens: 890,123
+└─ Total Tokens: 2,124,690
 
-#### Returns
-```typescript
-{
-    price: {
-        input: number;
-        output: number;
-        total: number;
-    };
-    tokens: {
-        input: number;
-        output: number;
-        total: number;
-    };
-}
+💰 Cost Breakdown:
+└─ Total Cost: $85.28
+
+💡 Subscription Comparison:
+├─ Monthly API Cost: $85.28
+├─ Claude Pro: $20.00
+└─ Recommendation: Consider Claude Pro Subscription
 ```
 
-## Pricing
+## Pricing Reference
 
-Current rates for Claude Sonnet 3.5:
+Current rates for Claude Sonnet:
 - Input tokens: $3.00 per million tokens
 - Output tokens: $15.00 per million tokens
+- Claude Pro subscription: $20.00 per month
+
+
+## License
+
+MIT
+
+## Author
+
+Gpaul | Faldin#8577

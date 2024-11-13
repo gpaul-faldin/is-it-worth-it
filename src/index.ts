@@ -108,5 +108,3 @@ if (!process.argv.slice(2).length) {
 //   fs.writeFileSync("info.json", JSON.stringify(info, null, 2))
 
 // })()
-
-
