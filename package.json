@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts",
+    "analyze": "ts-node src/index.ts analyze",
     "dev": "nodemon src/index.ts"
   },
   "author": "Gpaul | Faldin#8577",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
+    "commander": "^12.1.0",
     "dotenv": "^16.4.5"
   }
 }
