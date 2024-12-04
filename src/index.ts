@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import fs from "fs";
 dotenv.config(
   {
-    path: ".env"
+    path: ".env.local"
   }
 );
 import AnthropicClass from "./class/anthropic.class";

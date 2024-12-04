@@ -8,6 +8,16 @@ import {
   Attachments,
 } from "../dts/anthropic";
 
+interface Content {
+  type: string;
+  text?: string;
+  name?: string;
+  input?: {
+    content?: string;
+    new_str?: string;
+  };
+}
+
 export default class AnthropicClass {
   private client: Anthropic;
   private static InputPriceMtok: number = 3.0;
@@ -45,6 +55,30 @@ export default class AnthropicClass {
       }
     }
     return text;
+  }
+
+  private extractContentText(content: Content[]): string {
+    let text = "";
+    
+    for (const item of content) {
+
+
+
+      if (item.text) {
+        text += item.text + "\n";
+      }
+      if (item.type === "tool_use") {
+
+        if (item.input?.content) {
+          text += item.input.content + "\n";
+        } else if (item.input?.new_str){
+          text += item.input.new_str + "\n";
+        }
+      }
+
+    }
+    
+    return text.trim();
   }
 
   /* Anthropic functions */
@@ -123,7 +157,7 @@ export default class AnthropicClass {
   }
   public async getInfoSingleConversation(
     conversation: Chat
-  ): Promise<{ price: RetPrice; tokens: RetToken }> {
+  ): Promise<{ price: RetPrice; tokens: RetToken; context: BetaMessageParam[] }> {
     conversation = this.sortConversationByDate(conversation);
     const messages = conversation.chat_messages;
     var context: BetaMessageParam[] = [];
@@ -141,13 +175,19 @@ export default class AnthropicClass {
     };
 
     for (let i = 0; i < messages.length; i++) {
-      if (messages[i].text.length === 0) {
+      if (messages[i].content.length === 0) {
+        continue;
+      }
+
+      const messageText = this.extractContentText(messages[i].content);
+
+      if (messageText.length === 0) {
         continue;
       }
 
       context.push({
         role: messages[i].sender === "human" ? "user" : "assistant",
-        content: messages[i].content[0].text,
+        content: messageText,
       });
 
       if (messages[i].sender === "human") {
@@ -164,7 +204,7 @@ export default class AnthropicClass {
         price.input += tempPrice;
       } else if (messages[i].sender === "assistant") {
         let outputToken = await this.countTokens([
-          { role: "assistant", content: messages[i].content[0].text.trimEnd() },
+          { role: "assistant", content: messageText.trimEnd() },
         ]);
         tokens.output += outputToken;
         tokens.total += outputToken;
@@ -174,7 +214,8 @@ export default class AnthropicClass {
     }
 
     price.total = price.input + price.output;
+    
 
-    return { price, tokens };
+    return { price, tokens, context};
   }
 }
